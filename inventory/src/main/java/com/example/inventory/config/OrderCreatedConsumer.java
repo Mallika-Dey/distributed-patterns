@@ -6,6 +6,7 @@ import com.example.inventory.repository.InventoryRepository;
 import com.example.inventory.repository.OutboxRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class OrderCreatedConsumer {
     private final InventoryRepository inventoryRepository;
     private final OutboxRepository outboxRepository;
@@ -28,7 +30,7 @@ public class OrderCreatedConsumer {
     )
     @Transactional
     public void consume(String message) throws Exception {
-
+        log.info("Inventory consuming message");
         JsonNode json =
                 objectMapper.readTree(message);
         JsonNode payload = json.get("payload");
