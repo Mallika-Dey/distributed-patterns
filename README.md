@@ -1,4 +1,15 @@
-# distributed-patterns
+# Transaction-outbox-patterns
+Purpose
+- Capture outbox table changes from PostgreSQL and publish them to Kafka topics using Debezium.
+
+Key config fields
+- `connector.class` — Debezium Postgres connector implementation.
+- `database.*` — connection details for the Postgres database used by the service.
+- `topic.prefix` — prefix for Kafka topics produced by this connector.
+- `table.include.list` — table(s) to monitor (e.g. `public.outbox_events`).
+- `plugin.name` — logical decoding plugin (commonly `pgoutput`).
+- `slot.name` — (optional) replication slot name; keep unique per connector/DB.
+
 ```bash
 curl -X POST http://localhost:8083/connectors \
 -H "Content-Type: application/json" \
@@ -42,6 +53,13 @@ curl -X POST http://localhost:8083/connectors \
   }
 }'
 ```
+
+Quick checklist if things fail
+- Ensure Postgres has `wal_level = logical`.
+- The replication user must have replication privileges and be reachable from Connect.
+- Check Connect worker logs for connector startup/offset errors.
+- Make sure replication slot names are unique and the DB names/hosts are correct.
+
 ```bash
 # if needed remove broken connector
 curl -X DELETE http://localhost:8083/connectors/inventory-outbox-connector
