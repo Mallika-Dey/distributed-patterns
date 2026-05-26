@@ -1,6 +1,25 @@
-# Transaction-outbox-patterns
-Purpose
-- Capture outbox table changes from PostgreSQL and publish them to Kafka topics using Debezium.
+# Transaction-outbox-pattern
+## Key Concept
+The **Outbox Pattern** ensures reliable event publishing:
+1. Services write domain events to a local outbox table (same transaction as business logic)
+2. Debezium captures changes from the outbox using PostgreSQL WAL
+3. Events are published to Kafka topics
+4. Other services consume events from Kafka topics
+
+## Order Flow Example
+
+```
+User places order  ->  Order Service API      ->    Orders DB (with outbox)
+                                                        |
+                                                  Debezium Connector
+                                                        |
+                                                Kafka Topic (order-service.outbox_events)
+                                                        |
+                                                Inventory Service (consumes event)
+                                                        |
+    Order service   <-          kafka topic     <- Updates Inventory DB (with outbox)
+(inventory result consumer) (inventory-service.outbox_events)
+```
 
 Key config fields
 - `connector.class` — Debezium Postgres connector implementation.
