@@ -20,6 +20,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class OrderCreatedConsumer {
+    private static final String ORDER_CREATED = "OrderCreated";
+    private static final String INVENTORY_AGGREGATE = "Inventory";
+
     private final InventoryRepository inventoryRepository;
     private final OutboxRepository outboxRepository;
     private final ObjectMapper objectMapper;
@@ -40,6 +43,13 @@ public class OrderCreatedConsumer {
             return;
         }
 
+        String incomingEventType =
+                after.path("event_type").asText();
+
+        if (!ORDER_CREATED.equals(incomingEventType)) {
+            return;
+        }
+
         JsonNode payloadNode =
                 objectMapper.readTree(
                         after.get("payload").asText()
@@ -53,6 +63,14 @@ public class OrderCreatedConsumer {
 
         Long orderId =
                 payloadNode.get("orderId").asLong();
+
+        if (outboxRepository.existsByAggregateTypeAndAggregateId(
+                INVENTORY_AGGREGATE,
+                orderId.toString()
+        )) {
+            log.info("Inventory event already published for orderId={}", orderId);
+            return;
+        }
 
         Inventory inventory =
                 inventoryRepository
@@ -82,7 +100,7 @@ public class OrderCreatedConsumer {
         );
 
         OutboxEvent outbox = OutboxEvent.builder()
-                .aggregateType("Inventory")
+                .aggregateType(INVENTORY_AGGREGATE)
                 .aggregateId(orderId.toString())
                 .eventType(eventType)
                 .payload(

@@ -61,6 +61,12 @@ Quick checklist if things fail
 - Make sure replication slot names are unique and the DB names/hosts are correct.
 
 ```bash
+# view list of connector
+curl http://localhost:8083/connectors
+
+# check connector status
+curl http://localhost:8083/connectors/inventory-outbox-connector/status
+
 # if needed remove broken connector
 curl -X DELETE http://localhost:8083/connectors/inventory-outbox-connector
 ```
