@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty name="APP_NAME" source="spring.application.name"/>
+
+    <!--
+      The OTel Java agent auto-instruments Logback. Every log event becomes
+      a log record sent via OTLP to the collector. We don't need an ECS
+      encoder or file appender — the OTel pipeline handles it all.
+
+      MDC keys trace_id and span_id are injected automatically by the agent,
+      so they appear in the console pattern below AND in the exported logs.
+    -->
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [trace_id=%mdc{trace_id:-} span_id=%mdc{span_id:-}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <logger name="com.example" level="INFO"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="com.netflix" level="WARN"/>
+</configuration>

@@ -1,0 +1,80 @@
+services:
+  eureka-server-otel:
+    image: eureka:1.1
+    container_name: eureka-server-otel
+    ports:
+      - "8761:8761"
+    networks: [apps]
+
+  payment-service-otel:
+    image: payment-otel:0.0.1
+    container_name: payment-service-otel
+    environment:
+      - OTEL_SERVICE_NAME=payment-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=otlp
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server-otel:8761/eureka
+
+    ports:
+      - "8282:8080"
+    networks: [apps]
+
+  order-service-otel:
+    image: order-otel:0.0.1
+    container_name: order-service-otel
+    environment:
+      - OTEL_SERVICE_NAME=order-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=otlp
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server-otel:8761/eureka
+    ports:
+      - "8281:8080"
+    networks: [apps]
+
+  # OTEL COLLECTOR (ONLY logs + traces)
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.120.0
+    container_name: otel-collector
+
+    command: ["--config=/etc/otelcol/config.yml"]
+
+    environment:
+      - ELASTICSEARCH_URL=${ELASTICSEARCH_URL}
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    volumes:
+      - ./config.yml:/etc/otelcol/config.yml:ro
+
+    ports:
+      - "4319:4317"
+      - "4320:4318"
+
+    networks: [apps]
+
+  # PROMETHEUS METRICS STACK
+  node-exporter:
+    image: prom/node-exporter:v1.8.1
+    container_name: node-exporter
+    pid: host
+    ports:
+      - "9100:9100"
+    networks: [apps]
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    networks: [apps]
+
+networks:
+  apps:
+    driver: bridge
