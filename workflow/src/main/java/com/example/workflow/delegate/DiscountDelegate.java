@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 public class DiscountDelegate implements JavaDelegate {
 
     private final DiscountClient discountClient;
-    private final PaymentClient paymentClient;
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -38,17 +37,6 @@ public class DiscountDelegate implements JavaDelegate {
         execution.setVariable("finalAmount", response.getFinalAmount());
 
         log.info("Discount Service Returned {}", response);
-
-        PaymentRequest paymentRequest = PaymentRequest.builder()
-                .orderId(
-                        ((Number) execution.getVariable("orderId")).longValue())
-                .amount(
-                        ((Number) execution.getVariable("amount")).doubleValue())
-                .build();
-
-        PaymentResponse paymentResponse = paymentClient.apply(paymentRequest);
-
-        log.info("Payment Service Returned {}", paymentResponse);
 
     }
 
