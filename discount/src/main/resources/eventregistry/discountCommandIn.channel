@@ -1,0 +1,1 @@
+{"type":"kafka","channelType":"inbound","deserializerType":"json","topics":["discount_commands"],"channelEventKeyDetection":{"fixedValue":"applyDiscountCommand"},"name":"DiscountCommandIn","key":"discountCommandIn"}

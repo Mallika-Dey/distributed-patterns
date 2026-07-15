@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:design="http://flowable.org/design" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://flowable.org/test" exporter="Flowable Design" exporterVersion="2025.2.04" design:palette="flowable-work-process-palette">
+    <message id="discountAppliedEvent" name="DiscountAppliedEvent"></message>
+    <message id="paymentProcessedEvent" name="PaymentProcessedEvent"></message>
+    <process id="orderProcessAsync" name="Order Process Async" isExecutable="true" flowable:candidateStarterGroups="flowableUser">
+        <extensionElements>
+            <design:stencilid><![CDATA[BPMNDiagram]]></design:stencilid>
+            <design:creationdate><![CDATA[2026-07-15T13:37:18.235Z]]></design:creationdate>
+            <design:modificationdate><![CDATA[2026-07-15T14:02:45.789Z]]></design:modificationdate>
+        </extensionElements>
+        <serviceTask id="sendApplyDiscount" name="Send ApplyDiscount" flowable:type="send-event">
+            <extensionElements>
+                <flowable:eventType><![CDATA[applyDiscountCommand]]></flowable:eventType>
+                <flowable:eventInParameter source="${orderId}" target="orderId"></flowable:eventInParameter>
+                <flowable:eventInParameter source="${amount}" target="amount"></flowable:eventInParameter>
+                <flowable:eventInParameter source="${couponCode}" target="couponCode"></flowable:eventInParameter>
+                <flowable:channelKey><![CDATA[discountCommandOutChannel]]></flowable:channelKey>
+                <design:stencilid><![CDATA[SendEventTask]]></design:stencilid>
+                <design:stencilsuperid><![CDATA[Task]]></design:stencilsuperid>
+            </extensionElements>
+        </serviceTask>
+        <exclusiveGateway id="checkCoupon" name="Coupon?" default="SequenceFlow_11">
+            <documentation>check for the coupon</documentation>
+            <extensionElements>
+                <design:stencilid><![CDATA[Exclusive_Databased_Gateway]]></design:stencilid>
+                <design:display_ref_in_diagram><![CDATA[true]]></design:display_ref_in_diagram>
+            </extensionElements>
+        </exclusiveGateway>
+        <startEvent id="StartNoneEvent_5" flowable:initiator="initiator" flowable:formFieldValidation="false">
+            <extensionElements>
+                <flowable:work-form-field-validation><![CDATA[false]]></flowable:work-form-field-validation>
+                <design:stencilid><![CDATA[StartNoneEvent]]></design:stencilid>
+            </extensionElements>
+        </startEvent>
+        <endEvent id="end">
+            <extensionElements>
+                <design:stencilid><![CDATA[EndNoneEvent]]></design:stencilid>
+            </extensionElements>
+        </endEvent>
+        <sequenceFlow id="SequenceFlow_5" sourceRef="sendApplyDiscount" targetRef="end">
+            <extensionElements>
+                <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+            </extensionElements>
+        </sequenceFlow>
+        <sequenceFlow id="SequenceFlow_3" sourceRef="checkCoupon" targetRef="sendApplyDiscount">
+            <extensionElements>
+                <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+            </extensionElements>
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${couponPresent == true}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="SequenceFlow_11" sourceRef="checkCoupon" targetRef="end">
+            <extensionElements>
+                <flowable:is-default-flow><![CDATA[true]]></flowable:is-default-flow>
+                <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+            </extensionElements>
+        </sequenceFlow>
+        <sequenceFlow id="SequenceFlow_2" sourceRef="StartNoneEvent_5" targetRef="checkCoupon">
+            <extensionElements>
+                <design:stencilid><![CDATA[SequenceFlow]]></design:stencilid>
+            </extensionElements>
+        </sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_orderProcessAsync">
+        <bpmndi:BPMNPlane bpmnElement="orderProcessAsync" id="BPMNPlane_orderProcessAsync">
+            <bpmndi:BPMNShape bpmnElement="sendApplyDiscount" id="BPMNShape_sendApplyDiscount">
+                <omgdc:Bounds height="80.0" width="100.00000000000003" x="181.4144000000001" y="-32.70839999999998"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="checkCoupon" id="BPMNShape_checkCoupon">
+                <omgdc:Bounds height="40.0" width="40.0" x="130.4144000000001" y="86.29160000000002"></omgdc:Bounds>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="18.0" width="49.0" x="125.0" y="130.0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="StartNoneEvent_5" id="BPMNShape_StartNoneEvent_5">
+                <omgdc:Bounds height="30.0" width="30.0" x="33.41440000000008" y="91.29160000000002"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+                <omgdc:Bounds height="28.0" width="28.0" x="415.4144000000001" y="92.29160000000002"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_11" id="BPMNEdge_SequenceFlow_11" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+                <omgdi:waypoint x="170.4144000000001" y="106.29160000000002"></omgdi:waypoint>
+                <omgdi:waypoint x="415.4144000000001" y="106.29160000000002"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_5" id="BPMNEdge_SequenceFlow_5" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+                <omgdi:waypoint x="281.4144000000001" y="7.291600000000017"></omgdi:waypoint>
+                <omgdi:waypoint x="429.4144000000001" y="7.291600000000017"></omgdi:waypoint>
+                <omgdi:waypoint x="429.4144000000001" y="92.29160000000002"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_2" id="BPMNEdge_SequenceFlow_2" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+                <omgdi:waypoint x="63.0" y="106.0"></omgdi:waypoint>
+                <omgdi:waypoint x="130.0" y="106.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="SequenceFlow_3" id="BPMNEdge_SequenceFlow_3" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+                <omgdi:waypoint x="150.0" y="86.0"></omgdi:waypoint>
+                <omgdi:waypoint x="150.0" y="7.0"></omgdi:waypoint>
+                <omgdi:waypoint x="181.0" y="7.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

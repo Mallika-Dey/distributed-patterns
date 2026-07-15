@@ -1,6 +1,6 @@
 package com.example.discount;
 
-import com.example.discount.dto.DiscountRequest;
+import com.example.discount.dto.ApplyDiscountCommand;
 import com.example.discount.dto.DiscountResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +16,7 @@ public class DiscountController {
     private final DiscountService discountService;
 
     @PostMapping("/apply")
-    public DiscountResponse apply(@RequestBody DiscountRequest request) {
+    public DiscountResponse apply(@RequestBody ApplyDiscountCommand request) {
 
         return discountService.apply(request);
 

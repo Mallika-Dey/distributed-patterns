@@ -1,0 +1,1 @@
+{"channelType":"outbound","type":"kafka","serializerType":"json","topic":"discount_commands","name":"DiscountCommandOutChannel","key":"discountCommandOutChannel"}

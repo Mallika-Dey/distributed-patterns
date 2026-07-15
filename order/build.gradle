@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '4.0.6'
+	id 'org.springframework.boot' version '3.5.9'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -19,6 +19,13 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flowable:flowable-spring-boot-starter:7.1.0'
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    // Flowable Process Engine
+  //  implementation 'org.flowable:flowable-spring-boot-starter-process:7.1.0'
+    //implementation 'org.springframework.boot:spring-boot-starter-kafka'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
@@ -26,7 +33,7 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+//    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
 }
 
 tasks.named('test') {

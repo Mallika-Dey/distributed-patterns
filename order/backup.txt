@@ -1,0 +1,49 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: order-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/order
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  kafka:
+    bootstrap-servers: localhost:29092
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+#    consumer:
+#      group-id: order-service-group
+#      auto-offset-reset: earliest
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+flowable:
+#  database-schema-update: true
+#  async-executor-activate: true
+#  check-process-definitions: true
+#  process-definition-location-prefix: classpath:/processes/
+#  process-definition-location-suffixes: "**.bpmn20.xml,**.bpmn"
+  event-registry:
+    check-event-definitions: true
+#    event-definition-location-prefix: classpath:/eventregistry/
+#    event-definition-location-suffixes: "**.event"
+#    channel-definition-location-prefix: classpath:/eventregistry/
+#    channel-definition-location-suffixes: "**.channel"
+
+logging:
+  level:
+    org.flowable: INFO
+    org.flowable.eventregistry: DEBUG

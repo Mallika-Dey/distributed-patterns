@@ -15,9 +15,4 @@ public class OrderController {
     public Order create(@RequestBody CreateOrderRequest request) {
         return service.create(request);
     }
-
-    @PutMapping("/{id}/complete")
-    public void complete(@PathVariable Long id) {
-        service.complete(id);
-    }
 }
