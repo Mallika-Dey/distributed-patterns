@@ -1,0 +1,44 @@
+services:
+  primary:
+    image: postgres:16
+    container_name: pg-primary
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: demo
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - primary-data:/var/lib/postgresql/data
+      - ./postgres/primary/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres/primary:/etc/postgresql
+
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - hba_file=/etc/postgresql/pg_hba.conf
+
+  replica:
+    image: postgres:16
+    container_name: pg-replica
+
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5434:5432"
+
+    depends_on:
+      - primary
+
+    volumes:
+      - replica-data:/var/lib/postgresql/data
+
+volumes:
+  primary-data:
+  replica-data:
