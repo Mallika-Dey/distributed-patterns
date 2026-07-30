@@ -23,6 +23,9 @@ services:
       - -c
       - hba_file=/etc/postgresql/pg_hba.conf
 
+    networks:
+      - distributed-patterns-default
+
   replica:
     image: postgres:16
     container_name: pg-replica
@@ -38,7 +41,13 @@ services:
 
     volumes:
       - replica-data:/var/lib/postgresql/data
+    networks:
+      - distributed-patterns-default
 
 volumes:
   primary-data:
   replica-data:
+
+networks:
+  distributed-patterns-default:
+    name: distributed-patterns-default

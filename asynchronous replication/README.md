@@ -94,12 +94,12 @@ A WAL contains changes, not the entire database. So, a replica must start with e
 
 ```bash
 # create empty volume
-docker volume create distributed-patterns_replica-data
+docker volume create asynchronousreplication_replica-data
 
 # copy the primary's data in the volume
 docker run --rm \
-  --network distributed-patterns_default \
-  -v distributed-patterns_replica-data:/var/lib/postgresql/data \
+  --network distributed-patterns-default \
+  -v asynchronousreplication_replica-data:/var/lib/postgresql/data \
   postgres:16 \
   bash -c "PGPASSWORD=replpass pg_basebackup \
     -h primary \
