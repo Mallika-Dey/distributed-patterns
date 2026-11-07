@@ -1,0 +1,10 @@
+services:
+  seata-server:
+    image: apache/seata-server:2.1.0
+    container_name: seata-server
+    ports:
+      - "7091:7091"
+      - "8091:8091"
+    environment:
+      SEATA_PORT: 8091
+      STORE_MODE: file

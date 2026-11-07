@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: inventory-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inventory_db
+    username: seata_user
+    password: seata123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+seata:
+  enabled: true
+  tx-service-group: default_tx_group
+
+  registry:
+    type: file
+
+  config:
+    type: file
+
+  service:
+    vgroup-mapping:
+      default_tx_group: default
+
+    grouplist:
+      default: 127.0.0.1:8091
+
+server:
+  port: 8082
