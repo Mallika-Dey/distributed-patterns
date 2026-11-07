@@ -3,6 +3,7 @@ import com.example.order.client.DeductInventoryRequest;
 import com.example.order.client.InventoryClient;
 import com.example.order.dto.CreateOrderRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +16,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final InventoryClient inventoryClient;
 
-    @Transactional
+    @GlobalTransactional(name = "create-order", rollbackFor = Exception.class)
     public Order createOrder(CreateOrderRequest request) {
         // Deduct inventory from Inventory Service
         inventoryClient.deduct(
@@ -32,7 +33,9 @@ public class OrderService {
         order.setTotalPrice(request.getTotalPrice());
         order.setStatus("CREATED");
         order.setCreatedAt(LocalDateTime.now());
+        order = orderRepository.save(order);
+//        if(request.getQuantity() == 1) throw new RuntimeException("Simulating order creation failure");
 
-        return orderRepository.save(order);
+        return order;
     }
 }
